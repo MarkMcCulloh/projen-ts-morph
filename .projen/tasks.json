@@ -67,7 +67,7 @@
           "spawn": "test:compile"
         },
         {
-          "exec": "jest --passWithNoTests --all --updateSnapshot"
+          "exec": "jest --passWithNoTests --all"
         },
         {
           "spawn": "eslint"
@@ -255,9 +255,6 @@
         },
         {
           "spawn": "unbump"
-        },
-        {
-          "exec": "git diff --ignore-space-at-eol --exit-code"
         }
       ]
     }
