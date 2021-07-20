@@ -15,8 +15,8 @@
     "watch": "npx projen watch",
     "package": "npx projen package",
     "eslint": "npx projen eslint",
-    "default": "npx projen default",
     "docgen": "npx projen docgen",
+    "default": "npx projen default",
     "release": "npx projen release",
     "projen": "npx projen",
     "start": "npx projen start"
@@ -42,7 +42,7 @@
     "json-schema": "^0.3.0",
     "npm-check-updates": "^11",
     "prettier": "^2.3.2",
-    "projen": "0.27.5",
+    "projen": "0.27.6",
     "standard-version": "^9",
     "ts-jest": "^27.0.3",
     "ts-morph": "^11.0.3",
@@ -51,7 +51,7 @@
     "typescript": "~4.2.4"
   },
   "peerDependencies": {
-    "projen": "0.27.5",
+    "projen": "0.27.6",
     "ts-morph": "^11.0.3"
   },
   "bundledDependencies": [],

@@ -67,7 +67,7 @@
           "spawn": "test:compile"
         },
         {
-          "exec": "jest --passWithNoTests --all --updateSnapshot"
+          "exec": "jest --passWithNoTests --all"
         },
         {
           "spawn": "eslint"
@@ -217,20 +217,20 @@
         }
       ]
     },
-    "default": {
-      "name": "default",
-      "steps": [
-        {
-          "exec": "ts-node .projenrc.ts"
-        }
-      ]
-    },
     "docgen": {
       "name": "docgen",
       "description": "Generate TypeScript API reference docs/",
       "steps": [
         {
           "exec": "typedoc src --disableSources --out docs/"
+        }
+      ]
+    },
+    "default": {
+      "name": "default",
+      "steps": [
+        {
+          "exec": "ts-node .projenrc.ts"
         }
       ]
     },
@@ -252,9 +252,6 @@
         },
         {
           "spawn": "unbump"
-        },
-        {
-          "exec": "git diff --ignore-space-at-eol --exit-code"
         }
       ]
     }

@@ -7,11 +7,11 @@ const project = new TypeScriptProject({
   authorEmail: "Mark.McCulloh@gmail.com",
   releaseToNpm: false,
   projenrcTs: true,
-  peerDeps: ["projen@0.27.5", "ts-morph"],
+  peerDeps: ["projen@0.27.6", "ts-morph"],
   projenDevDependency: false,
   projectType: ProjectType.LIB,
   typescriptVersion: "~4.2.4",
-  // docgen: true,
+  docgen: true,
   stale: false,
   gitignore: ["test/test_project/"],
   eslintOptions: {
@@ -23,6 +23,7 @@ const project = new TypeScriptProject({
       testPathIgnorePatterns: ["/node_modules/", "test/test_project"],
     },
   },
+  antitamper: false,
 });
 
 const readmeText = `\
@@ -48,15 +49,6 @@ project.eslint!.addIgnorePattern("test/test_project/");
 
 project.testTask.prependExec("mkdir test/test_project");
 project.testTask.prependExec("rm -rf test/test_project");
-
-project.addDevDeps("typedoc@^0.21.4");
-
-const docgen = project.addTask("docgen", {
-  description: `Generate TypeScript API reference ${project.docsDirectory}`,
-  exec: `typedoc ${project.srcdir} --disableSources --out ${project.docsDirectory}`,
-});
-
-project.buildTask.spawn(docgen);
 
 project.addExcludeFromCleanup("docs/**");
 
