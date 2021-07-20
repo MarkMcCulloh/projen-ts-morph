@@ -1,3 +1,4 @@
+import { existsSync } from "fs";
 import { resolve } from "path";
 import * as projen from "projen";
 import * as projenLib from "projen/lib";
@@ -38,7 +39,10 @@ export class TypescriptFile extends projenLib.Component {
 
   private static _tsProject: morph.Project = new morph.Project({
     skipAddingFilesFromTsConfig: true,
-    manipulationSettings: {},
+    manipulationSettings: {
+      indentationText: morph.IndentationText.TwoSpaces,
+      quoteKind: morph.QuoteKind.Single,
+    },
   });
   private static _projectHasBeenSaved: boolean = false;
   private static _tsconfigHasBeenLoaded: boolean = false;
@@ -69,7 +73,8 @@ export class TypescriptFile extends projenLib.Component {
       !TypescriptFile._tsconfigHasBeenLoaded &&
       TypescriptFile.UseProjectTSConfig &&
       project instanceof projen.TypeScriptProject &&
-      project.tsconfig
+      project.tsconfig &&
+      existsSync(resolve(project.outdir, project.tsconfig.file.path))
     ) {
       TypescriptFile._tsProject.addSourceFilesFromTsConfig(
         resolve(project.outdir, project.tsconfig.file.path)

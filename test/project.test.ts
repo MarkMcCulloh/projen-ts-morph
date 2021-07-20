@@ -1,3 +1,4 @@
+import { readFileSync, writeFileSync } from "fs";
 import { TypeScriptProject } from "projen";
 import { TypescriptFile } from "./../src/index";
 
@@ -12,8 +13,17 @@ test("create project", () => {
   const tsFile = new TypescriptFile(project, "src/cool.ts");
   tsFile.source.addClass({ name: "MyClass", isExported: true });
 
-  const otherSource = tsFile.tsProject.getSourceFileOrThrow(
-    "test/test_project/src/index.ts"
+  const dummyFile = `\
+export class Hello {
+  public sayHello() {
+    return 'hello, ____!';
+  }
+}`;
+
+  writeFileSync("test/test_project/dummy.ts", dummyFile);
+
+  const otherSource = tsFile.tsProject.addSourceFileAtPath(
+    "test/test_project/dummy.ts"
   );
 
   otherSource
@@ -22,4 +32,12 @@ test("create project", () => {
     .setBodyText("return 'hello, world!';");
 
   project.synth();
+
+  expect(readFileSync("test/test_project/dummy.ts", { encoding: "utf8" }))
+    .toBe(`\
+export class Hello {
+  public sayHello() {
+    return 'hello, world!';
+  }
+}`);
 });

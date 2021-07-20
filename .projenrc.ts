@@ -44,6 +44,9 @@ new TextFile(project, "README.md", {
 
 project.eslint!.addIgnorePattern("test/test_project/");
 
+project.testTask.prependExec("mkdir test/test_project");
+project.testTask.prependExec("rm -rf test/test_project");
+
 project.tasks.tryFind("docgen")!.reset("rm -rf docs");
 project.tasks.tryFind("docgen")!.exec("typedoc src/index.ts --out docs/");
 

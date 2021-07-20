@@ -55,6 +55,12 @@
       "description": "Run tests",
       "steps": [
         {
+          "exec": "rm -rf test/test_project"
+        },
+        {
+          "exec": "mkdir test/test_project"
+        },
+        {
           "exec": "rm -fr lib/"
         },
         {
