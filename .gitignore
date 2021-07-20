@@ -12,7 +12,8 @@
 .yarn-integrity
 /coverage
 /dist
-/dist\changelog.md
+/dist/changelog.md
+/dist/version.md
 /dist\version.txt
 /lib
 /test-reports/

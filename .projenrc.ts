@@ -63,4 +63,7 @@ project.tasks.tryFind("bump")!.env("BUMPFILE", "dist/version.txt");
 project.tasks.tryFind("unbump")!.env("CHANGELOG", "dist/changelog.md");
 project.tasks.tryFind("unbump")!.env("BUMPFILE", "dist/version.txt");
 
+project.gitignore.removePatterns("/dist\\changelog.md", "/dist\\version.md");
+project.gitignore.addPatterns("/dist/changelog.md", "/dist/version.md");
+
 project.synth();
