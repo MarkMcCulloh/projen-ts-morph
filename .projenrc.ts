@@ -57,4 +57,10 @@ project.tasks
 
 project.addExcludeFromCleanup("docs/**");
 
+project.tasks.tryFind("bump")!.env("CHANGELOG", "dist/changelog.md");
+project.tasks.tryFind("bump")!.env("BUMPFILE", "dist/version.txt");
+
+project.tasks.tryFind("unbump")!.env("CHANGELOG", "dist/changelog.md");
+project.tasks.tryFind("unbump")!.env("BUMPFILE", "dist/version.txt");
+
 project.synth();
