@@ -225,7 +225,7 @@
           "exec": "rm -rf docs"
         },
         {
-          "exec": "typedoc src/index.ts --out docs/"
+          "exec": "typedoc src/index.ts --disableSources --out docs/"
         }
       ]
     },

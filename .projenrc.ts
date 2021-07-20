@@ -48,6 +48,8 @@ project.testTask.prependExec("mkdir test/test_project");
 project.testTask.prependExec("rm -rf test/test_project");
 
 project.tasks.tryFind("docgen")!.reset("rm -rf docs");
-project.tasks.tryFind("docgen")!.exec("typedoc src/index.ts --out docs/");
+project.tasks
+  .tryFind("docgen")!
+  .exec("typedoc src/index.ts --disableSources --out docs/");
 
 project.synth();
