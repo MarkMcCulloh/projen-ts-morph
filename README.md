@@ -3,4 +3,4 @@
 It is so unnecessary to use projen for this, but here I go anyways :)
 -->
 
-# ts-morph-projen
+# projen-ts-morph

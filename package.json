@@ -1,5 +1,5 @@
 {
-  "name": "ts-morph-projen",
+  "name": "projen-ts-morph",
   "scripts": {
     "clobber": "npx projen clobber",
     "compile": "npx projen compile",

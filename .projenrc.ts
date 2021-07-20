@@ -2,7 +2,7 @@ import { FileBase, ProjectType, TextFile, TypeScriptProject } from "projen";
 
 const project = new TypeScriptProject({
   defaultReleaseBranch: "main",
-  name: "ts-morph-projen",
+  name: "projen-ts-morph",
   authorName: "Mark McCulloh",
   authorEmail: "Mark.McCulloh@gmail.com",
   projenrcTs: true,
