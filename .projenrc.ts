@@ -7,11 +7,11 @@ const project = new TypeScriptProject({
   authorEmail: "Mark.McCulloh@gmail.com",
   releaseToNpm: false,
   projenrcTs: true,
-  peerDeps: ["projen@0.27.4", "ts-morph"],
+  peerDeps: ["projen@0.27.5", "ts-morph"],
   projenDevDependency: false,
   projectType: ProjectType.LIB,
   typescriptVersion: "~4.2.4",
-  docgen: true,
+  // docgen: true,
   stale: false,
   gitignore: ["test/test_project/"],
   eslintOptions: {
@@ -23,9 +23,6 @@ const project = new TypeScriptProject({
       testPathIgnorePatterns: ["/node_modules/", "test/test_project"],
     },
   },
-  // TODO: This requires a fix in projen
-  // the release workflow has windows paths
-  antitamper: false,
 });
 
 const readmeText = `\
@@ -37,6 +34,8 @@ It is so unnecessary to use projen for this, but here I go anyways :)
 # ${project.name}
 
 Generate and navigate typescript files with a Projen component
+
+[https://markmcculloh.github.io/projen-ts-morph/](d)
 
 See https://github.com/dsherret/ts-morph for more details on the API. I take no credit for that amazing project.
 `;
@@ -50,20 +49,15 @@ project.eslint!.addIgnorePattern("test/test_project/");
 project.testTask.prependExec("mkdir test/test_project");
 project.testTask.prependExec("rm -rf test/test_project");
 
-project.tasks.tryFind("docgen")!.reset("rm -rf docs");
-project.tasks
-  .tryFind("docgen")!
-  .exec("typedoc src/index.ts --disableSources --out docs/");
+project.addDevDeps("typedoc@^0.21.4");
+
+const docgen = project.addTask("docgen", {
+  description: `Generate TypeScript API reference ${project.docsDirectory}`,
+  exec: `typedoc ${project.srcdir} --disableSources --out ${project.docsDirectory}`,
+});
+
+project.buildTask.spawn(docgen);
 
 project.addExcludeFromCleanup("docs/**");
-
-project.tasks.tryFind("bump")!.env("CHANGELOG", "dist/changelog.md");
-project.tasks.tryFind("bump")!.env("BUMPFILE", "dist/version.txt");
-
-project.tasks.tryFind("unbump")!.env("CHANGELOG", "dist/changelog.md");
-project.tasks.tryFind("unbump")!.env("BUMPFILE", "dist/version.txt");
-
-project.gitignore.removePatterns("/dist\\changelog.md", "/dist\\version.md");
-project.gitignore.addPatterns("/dist/changelog.md", "/dist/version.md");
 
 project.synth();

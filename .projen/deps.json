@@ -65,7 +65,7 @@
     },
     {
       "name": "projen",
-      "version": "0.27.4",
+      "version": "0.27.5",
       "type": "build"
     },
     {
@@ -88,7 +88,7 @@
     },
     {
       "name": "typedoc",
-      "version": "^0.20.35",
+      "version": "^0.21.4",
       "type": "build"
     },
     {
@@ -98,7 +98,7 @@
     },
     {
       "name": "projen",
-      "version": "0.27.4",
+      "version": "0.27.5",
       "type": "peer"
     },
     {

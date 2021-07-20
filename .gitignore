@@ -13,8 +13,7 @@
 /coverage
 /dist
 /dist/changelog.md
-/dist/version.md
-/dist\version.txt
+/dist/version.txt
 /lib
 /test-reports/
 build/Release
