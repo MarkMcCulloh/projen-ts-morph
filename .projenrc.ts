@@ -5,6 +5,7 @@ const project = new TypeScriptProject({
   name: "projen-ts-morph",
   authorName: "Mark McCulloh",
   authorEmail: "Mark.McCulloh@gmail.com",
+  releaseToNpm: false,
   projenrcTs: true,
   peerDeps: ["projen@0.27.4", "ts-morph"],
   projenDevDependency: false,
@@ -31,6 +32,10 @@ It is so unnecessary to use projen for this, but here I go anyways :)
 -->
 
 # ${project.name}
+
+Generate and navigate typescript files with a Projen component
+
+See https://github.com/dsherret/ts-morph for more details on the API. I take no credit for that amazing project.
 `;
 
 new TextFile(project, "README.md", {
@@ -39,6 +44,7 @@ new TextFile(project, "README.md", {
 
 project.eslint!.addIgnorePattern("test/test_project/");
 
-project.tasks.tryFind("docgen")!.reset("typedoc src/index.ts --out docs/");
+project.tasks.tryFind("docgen")!.reset("rm -rf docs");
+project.tasks.tryFind("docgen")!.exec("typedoc src/index.ts --out docs/");
 
 project.synth();

@@ -216,6 +216,9 @@
       "description": "Generate TypeScript API reference docs/",
       "steps": [
         {
+          "exec": "rm -rf docs"
+        },
+        {
           "exec": "typedoc src/index.ts --out docs/"
         }
       ]
