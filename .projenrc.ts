@@ -7,7 +7,7 @@ const project = new TypeScriptProject({
   name: "projen-ts-morph",
   authorName: "Mark McCulloh",
   authorEmail: "Mark.McCulloh@gmail.com",
-  releaseToNpm: false,
+  releaseToNpm: true,
   projenrcTs: true,
   peerDeps: ["projen@0.27.6", "ts-morph"],
   projenDevDependency: false,
