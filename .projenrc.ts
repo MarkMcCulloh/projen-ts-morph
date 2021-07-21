@@ -57,16 +57,12 @@ exampleUsage.addStatements([
 ]);
 
 const readmeText = `\
-<!---
-${FileBase.PROJEN_MARKER}
-It is so unnecessary to use projen for this readme, but here I go anyways :)
--->
+![release](https://github.com/MarkMcCulloh/projen-ts-morph/actions/workflows/release.yml/badge.svg)
+![npm version](https://badge.fury.io/js/projen-ts-morph.svg)
 
 # ${project.name}
 
-## Goal
-
-Generate and navigate typescript files with a Projen component.
+Generate and navigate typescript files with a [Projen](https://github.com/projen/projen) component.
 
 ## Implementation
 The sole exported class of this project, \`TypescriptMorpher\`, acts as a wrapper around the excellent [ts-morph](https://github.com/dsherret/ts-morph/tree/latest/packages/ts-morph).
@@ -74,6 +70,10 @@ The sole exported class of this project, \`TypescriptMorpher\`, acts as a wrappe
 A few convenience methods are added to that class to aid in codegen, and during the synth() phase of your project all creations/updates/deletes will be saved to disk.
 
 See https://github.com/dsherret/ts-morph and https://ts-morph.com for more details on the API. I take no credit for that amazing project.
+
+## Stability
+
+Consider this library unstable.
 
 ## Examples
 
@@ -85,8 +85,12 @@ See [this project's .projenrc.ts](./.projenrc.ts) for usage of \`createTemporary
 
 ${morpher.renderFencedTypescript(exampleUsage)}
 
-
 ## [Typedocs](https://markmcculloh.github.io/projen-ts-morph/)
+
+<!---
+${FileBase.PROJEN_MARKER}
+It is so unnecessary to use projen for this readme, but here I go anyways :)
+-->
 `;
 
 new TextFile(project, "README.md", {
