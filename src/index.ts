@@ -1,108 +1,87 @@
 import { existsSync } from "fs";
-import { resolve } from "path";
+import { posix } from "path";
 import * as projen from "projen";
 import * as projenLib from "projen/lib";
 import * as morph from "ts-morph";
 
-// function parseESLintFile(rules: any): morph.ManipulationSettings {
-//   if(rules) {
-//     const indentRule = rules["@typescript-eslint/indent"]
-//   }
-//   return {
-//     indentSize: rules["@typescript-eslint/indent"][1],
-//     quoteType: rules.quotes[1],
-//   };
-// }
-
-/**
- * Options for the TypescriptFile object.
- */
-export interface TypescriptFileOptions {
+export interface CreateTypescriptFileOptions {
   readonly allowChanges?: boolean;
 }
-export class TypescriptFile extends projenLib.Component {
-  public static UseProjectTSConfig: boolean = true;
 
-  public static setManipulationSettings(
-    settings: Partial<morph.ManipulationSettings>
-  ) {
-    this._tsProject.manipulationSettings.set(settings);
-  }
+export interface MorphProjectOptions {
+  readonly skipAddingFilesFromTsConfig?: boolean;
+  readonly tsconfigPath?: string;
+  readonly manipulationSettings?: Partial<morph.ManipulationSettings>;
+}
 
-  public static addFilesFromTSConfig(tsconfigPath: string) {
-    TypescriptFile._tsProject.addSourceFilesFromTsConfig(tsconfigPath);
-  }
+export class TypescriptMorpher extends projenLib.Component {
+  public readonly tsProject: morph.Project;
 
-  public static addExistingSourceFiles(...files: string[]) {
-    TypescriptFile._tsProject.addSourceFilesAtPaths(files);
-  }
+  private baseDirectory: string;
 
-  private static _tsProject: morph.Project = new morph.Project({
-    skipAddingFilesFromTsConfig: true,
-    manipulationSettings: {
-      indentationText: morph.IndentationText.TwoSpaces,
-      quoteKind: morph.QuoteKind.Single,
-    },
-  });
-  private static _projectHasBeenSaved: boolean = false;
-  private static _tsconfigHasBeenLoaded: boolean = false;
-
-  public source: morph.SourceFile;
-  public filePath: string;
-  public allowChanges: boolean;
-  get tsProject(): morph.Project {
-    return TypescriptFile._tsProject;
-  }
-
-  /**
-   * Creates a new TypescriptFile object
-   * @param project - the project to tie this file to.
-   * @param filePath - the relative path in the project to put the file
-   */
-  constructor(
-    project: projen.Project,
-    filePath: string,
-    options?: TypescriptFileOptions
-  ) {
+  constructor(project: projen.Project, options?: MorphProjectOptions) {
     super(project);
 
-    this.allowChanges = !!options?.allowChanges;
-    this.filePath = resolve(project.outdir, filePath);
+    this.baseDirectory = project.outdir;
 
-    if (
-      !TypescriptFile._tsconfigHasBeenLoaded &&
-      TypescriptFile.UseProjectTSConfig &&
-      project instanceof projen.TypeScriptProject &&
-      project.tsconfig &&
-      existsSync(resolve(project.outdir, project.tsconfig.file.path))
-    ) {
-      TypescriptFile._tsProject.addSourceFilesFromTsConfig(
-        resolve(project.outdir, project.tsconfig.file.path)
-      );
+    let tsconfigPath;
 
-      TypescriptFile._tsconfigHasBeenLoaded = true;
+    if (!options?.skipAddingFilesFromTsConfig) {
+      tsconfigPath = options?.tsconfigPath
+        ? posix.resolve(this.baseDirectory, options.tsconfigPath)
+        : undefined;
+
+      if (
+        !tsconfigPath &&
+        project instanceof projen.TypeScriptProject &&
+        project.tsconfig &&
+        existsSync(posix.resolve(project.outdir, project.tsconfig.file.path))
+      ) {
+        tsconfigPath = posix.resolve(
+          project.outdir,
+          project.tsconfig.file.path
+        );
+      }
     }
 
-    this.source = TypescriptFile._tsProject.createSourceFile(
-      this.filePath,
-      undefined,
-      { overwrite: !this.allowChanges }
+    this.tsProject = new morph.Project({
+      skipAddingFilesFromTsConfig:
+        !tsconfigPath || options?.skipAddingFilesFromTsConfig,
+      tsConfigFilePath: tsconfigPath,
+      manipulationSettings: {
+        indentationText: morph.IndentationText.TwoSpaces,
+        quoteKind: morph.QuoteKind.Single,
+        ...(options?.manipulationSettings ?? {}),
+      },
+    });
+  }
+
+  public createTypescriptFile(
+    filePath: string,
+    options?: CreateTypescriptFileOptions
+  ): morph.SourceFile {
+    const source = this.tsProject.createSourceFile(filePath, undefined, {
+      overwrite: !options?.allowChanges,
+    });
+
+    if (!options?.allowChanges) {
+      this.project.annotateGenerated(filePath);
+      source.insertText(0, `// ${projen.FileBase.PROJEN_MARKER}\n`);
+    }
+
+    return source;
+  }
+
+  public getTypescriptFile(filePath: string): morph.SourceFile | undefined {
+    return this.tsProject.addSourceFileAtPathIfExists(
+      posix.resolve(this.baseDirectory, filePath)
     );
   }
 
-  public preSynthesize() {
-    if (!this.allowChanges) {
-      // Where did this go??
-      this.project.annotateGenerated(this.filePath);
-      this.source.insertText(0, `// ${projen.FileBase.PROJEN_MARKER}\n`);
-    }
-  }
+  public preSynthesize() {}
 
   public synthesize() {
-    if (!TypescriptFile._projectHasBeenSaved) {
-      TypescriptFile._projectHasBeenSaved = true;
-      TypescriptFile._tsProject.saveSync();
-    }
+    this.tsProject.saveSync();
   }
 
   public postSynthesize() {}

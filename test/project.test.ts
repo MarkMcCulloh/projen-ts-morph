@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync } from "fs";
 import { TypeScriptProject } from "projen";
-import { TypescriptFile } from "./../src/index";
+import { TypescriptMorpher } from "./../src/index";
 
 test("create project", () => {
   process.env.PROJEN_DISABLE_POST = "true";
@@ -9,9 +9,6 @@ test("create project", () => {
     name: "test",
     outdir: "test/test_project",
   });
-
-  const tsFile = new TypescriptFile(project, "src/cool.ts");
-  tsFile.source.addClass({ name: "MyClass", isExported: true });
 
   const dummyFile = `\
 export class Hello {
@@ -22,9 +19,11 @@ export class Hello {
 
   writeFileSync("test/test_project/dummy.ts", dummyFile);
 
-  const otherSource = tsFile.tsProject.addSourceFileAtPath(
-    "test/test_project/dummy.ts"
-  );
+  const tsMorpher = new TypescriptMorpher(project);
+  const tsFile = tsMorpher.createTypescriptFile("src/cool.ts");
+
+  tsFile.addClass({ name: "MyClass", isExported: true });
+  const otherSource = tsMorpher.getTypescriptFile("test/test_project/dummy.ts");
 
   otherSource
     .getClassOrThrow("Hello")

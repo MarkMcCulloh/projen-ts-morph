@@ -36,9 +36,14 @@ It is so unnecessary to use projen for this, but here I go anyways :)
 
 Generate and navigate typescript files with a Projen component
 
-[https://markmcculloh.github.io/projen-ts-morph/](d)
+[Typedocs](https://markmcculloh.github.io/projen-ts-morph/)
 
 See https://github.com/dsherret/ts-morph for more details on the API. I take no credit for that amazing project.
+
+## Examples
+
+
+
 `;
 
 new TextFile(project, "README.md", {
