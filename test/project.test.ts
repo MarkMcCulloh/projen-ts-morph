@@ -23,9 +23,7 @@ export class Hello {
   const tsFile = tsMorpher.createTypescriptFile("src/cool.ts");
 
   tsFile.addClass({ name: "MyClass", isExported: true });
-  const otherSource = tsMorpher.getTypescriptFileOrThrow(
-    "test/test_project/dummy.ts"
-  );
+  const otherSource = tsMorpher.getTypescriptFileOrThrow("dummy.ts");
 
   otherSource
     .getClassOrThrow("Hello")

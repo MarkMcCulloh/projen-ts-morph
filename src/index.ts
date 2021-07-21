@@ -35,12 +35,9 @@ export class TypescriptMorpher extends projenLib.Component {
         !tsconfigPath &&
         project instanceof projen.TypeScriptProject &&
         project.tsconfig &&
-        existsSync(posix.resolve(project.outdir, project.tsconfig.file.path))
+        existsSync(posix.join(project.outdir, project.tsconfig.file.path))
       ) {
-        tsconfigPath = posix.resolve(
-          project.outdir,
-          project.tsconfig.file.path
-        );
+        tsconfigPath = posix.join(project.outdir, project.tsconfig.file.path);
       }
     }
 
@@ -74,13 +71,13 @@ export class TypescriptMorpher extends projenLib.Component {
 
   public getTypescriptFile(filePath: string): morph.SourceFile | undefined {
     return this.tsProject.addSourceFileAtPathIfExists(
-      posix.resolve(this.baseDirectory, filePath)
+      posix.join(this.baseDirectory, filePath)
     );
   }
 
   public getTypescriptFileOrThrow(filePath: string): morph.SourceFile {
     return this.tsProject.addSourceFileAtPath(
-      posix.resolve(this.baseDirectory, filePath)
+      posix.join(this.baseDirectory, filePath)
     );
   }
 
