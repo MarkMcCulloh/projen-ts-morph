@@ -12,6 +12,10 @@ A few convenience methods are added to that class to aid in codegen, and during 
 
 See https://github.com/dsherret/ts-morph and https://ts-morph.com for more details on the API. I take no credit for that amazing project.
 
+## Gettings Started
+
+Make sure to add `ts-morph` as a dependency and make sure it's actually installed before attempting to use this component. See examples below to get started.
+
 ## Stability
 
 Consider this library unstable.
