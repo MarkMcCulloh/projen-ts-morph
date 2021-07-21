@@ -1,4 +1,6 @@
 import { FileBase, ProjectType, TextFile, TypeScriptProject } from "projen";
+import { VariableDeclarationKind } from "ts-morph";
+import { TypescriptMorpher } from "./src";
 
 const project = new TypeScriptProject({
   defaultReleaseBranch: "main",
@@ -26,24 +28,65 @@ const project = new TypeScriptProject({
   antitamper: false,
 });
 
+const morpher = new TypescriptMorpher(project);
+const exampleUsage = morpher.createTemporaryTypescriptFile("basic_create.ts");
+exampleUsage.addImportDeclaration({
+  moduleSpecifier: "projen-ts-morph",
+  namedImports: ["TypescriptMorpher"],
+});
+exampleUsage.addVariableStatement({
+  declarationKind: VariableDeclarationKind.Const,
+  declarations: [
+    { name: "morpher", initializer: "new TypescriptMorpher(project)" },
+  ],
+});
+exampleUsage.addVariableStatement({
+  declarationKind: VariableDeclarationKind.Const,
+  declarations: [
+    {
+      name: "source",
+      initializer: "morpher.createTypescriptFile('src/cool_generated.ts')",
+    },
+  ],
+});
+exampleUsage.addStatements([
+  `source.addClass({
+    name: 'CoolGenerated',
+    isDefaultExport: true,
+  });`,
+]);
+
 const readmeText = `\
 <!---
 ${FileBase.PROJEN_MARKER}
-It is so unnecessary to use projen for this, but here I go anyways :)
+It is so unnecessary to use projen for this readme, but here I go anyways :)
 -->
 
 # ${project.name}
 
-Generate and navigate typescript files with a Projen component
+## Goal
 
-[Typedocs](https://markmcculloh.github.io/projen-ts-morph/)
+Generate and navigate typescript files with a Projen component.
 
-See https://github.com/dsherret/ts-morph for more details on the API. I take no credit for that amazing project.
+## Implementation
+The sole exported class of this project, \`TypescriptMorpher\`, acts as a wrapper around the excellent [ts-morph](https://github.com/dsherret/ts-morph/tree/latest/packages/ts-morph).
+
+A few convenience methods are added to that class to aid in codegen, and during the synth() phase of your project all creations/updates/deletes will be saved to disk.
+
+See https://github.com/dsherret/ts-morph and https://ts-morph.com for more details on the API. I take no credit for that amazing project.
 
 ## Examples
 
+### Create an example snippet for your README
+
+See [this project's .projenrc.ts](./.projenrc.ts) for usage of \`createTemporaryTypescriptFile\` and \`renderFencedTypescript\`
+
+### Create a simple empty class
+
+${morpher.renderFencedTypescript(exampleUsage)}
 
 
+## [Typedocs](https://markmcculloh.github.io/projen-ts-morph/)
 `;
 
 new TextFile(project, "README.md", {

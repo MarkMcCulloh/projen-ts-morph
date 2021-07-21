@@ -1,4 +1,5 @@
 import { existsSync } from "fs";
+import { tmpdir } from "os";
 import { posix } from "path";
 import * as projen from "projen";
 import * as projenLib from "projen/lib";
@@ -52,6 +53,7 @@ export class TypescriptMorpher extends projenLib.Component {
   public readonly tsProject: morph.Project;
 
   private baseDirectory: string;
+  private temporaryFiles: morph.SourceFile[];
 
   /**
    * Initializes a ts-morph project inside a given Projen project
@@ -62,6 +64,7 @@ export class TypescriptMorpher extends projenLib.Component {
     super(project);
 
     this.baseDirectory = project.outdir;
+    this.temporaryFiles = [];
 
     let tsconfigPath;
 
@@ -136,6 +139,41 @@ export class TypescriptMorpher extends projenLib.Component {
   }
 
   /**
+   * Renders the given source file as a fenced code block for markdown
+   * @param source Typescript source to render
+   * @param options Customize output format
+   * @returns String render of source
+   */
+  public renderFencedTypescript(
+    source: morph.SourceFile,
+    options?: morph.PrintNodeOptions
+  ) {
+    return `\
+\`\`\`typescript
+${source.print(options)}\`\`\``;
+  }
+
+  /**
+   * Create an in-memory-only Typescript file.
+   * It will not be written to the filesystem.
+   * @param fileName A filename that represent this source ("example.ts").
+   * @returns a Typescript file. Use .print() to get the generated contents
+   */
+  public createTemporaryTypescriptFile(fileName: string): morph.SourceFile {
+    const source = this.tsProject.createSourceFile(
+      posix.join(tmpdir(), `${Date.now()}/`, fileName),
+      undefined,
+      {
+        overwrite: true,
+      }
+    );
+
+    this.temporaryFiles.push(source);
+
+    return source;
+  }
+
+  /**
    * Gets an existing Typescript source file
    * @param filePath path to existing typescript file, relative to project root
    * @returns Typescript source file
@@ -159,6 +197,9 @@ export class TypescriptMorpher extends projenLib.Component {
   }
 
   public synthesize() {
+    this.temporaryFiles.forEach((tempFile) => {
+      tempFile.delete();
+    });
     this.tsProject.saveSync();
   }
 }
