@@ -79,7 +79,7 @@ Consider this library unstable.
 
 ### Create an example snippet for your README
 
-See [this project's .projenrc.ts](./.projenrc.ts) for usage of \`createTemporaryTypescriptFile\` and \`renderFencedTypescript\`
+See [this project's .projenrc.ts](./.projenrc.ts#L31) for usage of \`createTemporaryTypescriptFile\` and \`renderFencedTypescript\`
 
 ### Create a simple empty class
 
