@@ -78,6 +78,12 @@ export class TypescriptMorpher extends projenLib.Component {
     );
   }
 
+  public getTypescriptFileOrThrow(filePath: string): morph.SourceFile {
+    return this.tsProject.addSourceFileAtPath(
+      posix.resolve(this.baseDirectory, filePath)
+    );
+  }
+
   public preSynthesize() {}
 
   public synthesize() {
