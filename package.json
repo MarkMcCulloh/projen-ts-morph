@@ -45,7 +45,7 @@
     "prettier": "^2.3.2",
     "projen": "0.27.6",
     "standard-version": "^9",
-    "ts-jest": "^27.0.3",
+    "ts-jest": "^27.0.4",
     "ts-morph": "^11.0.3",
     "ts-node": "^9",
     "typedoc": "^0.21.4",
