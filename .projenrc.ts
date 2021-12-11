@@ -1,4 +1,5 @@
-import { FileBase, ProjectType, TextFile, TypeScriptProject } from "projen";
+import { FileBase, Project, TextFile } from "projen";
+import { TypeScriptProject } from "projen/lib/typescript";
 import { VariableDeclarationKind } from "ts-morph";
 import { TypescriptMorpher } from "./src";
 
@@ -11,10 +12,8 @@ const project = new TypeScriptProject({
   projenrcTs: true,
   peerDeps: ["projen@0.27.6", "ts-morph"],
   projenDevDependency: false,
-  projectType: ProjectType.LIB,
   typescriptVersion: "~4.2.4",
   docgen: true,
-  stale: false,
   gitignore: ["test/test_project/"],
   eslintOptions: {
     dirs: ["src", "test"],
@@ -97,7 +96,7 @@ It is so unnecessary to use projen for this readme, but here I go anyways :)
 -->
 `;
 
-new TextFile(project, "README.md", {
+new TextFile(project as Project, "README.md", {
   lines: readmeText.split("\n"),
 });
 

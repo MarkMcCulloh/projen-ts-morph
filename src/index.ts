@@ -2,7 +2,10 @@ import { existsSync } from "fs";
 import { tmpdir } from "os";
 import { posix } from "path";
 import * as projen from "projen";
+import { Project } from "projen";
 import * as projenLib from "projen/lib";
+import { NodeProject } from "projen/lib/node-project";
+import { TypeScriptAppProject, TypeScriptProject } from "projen/lib/typescript";
 import * as morph from "ts-morph";
 
 /**
@@ -60,8 +63,11 @@ export class TypescriptMorpher extends projenLib.Component {
    * @param project Projen project
    * @param options Customization for ts-morph project
    */
-  constructor(project: projen.Project, options?: MorphProjectOptions) {
-    super(project);
+  constructor(
+    project: NodeProject | TypeScriptAppProject | TypeScriptProject,
+    options?: MorphProjectOptions
+  ) {
+    super(project as Project);
 
     this.baseDirectory = project.outdir;
     this.temporaryFiles = [];
@@ -75,7 +81,7 @@ export class TypescriptMorpher extends projenLib.Component {
 
       if (
         !tsconfigPath &&
-        project instanceof projen.TypeScriptProject &&
+        project instanceof TypeScriptProject &&
         project.tsconfig &&
         existsSync(posix.join(project.outdir, project.tsconfig.file.path))
       ) {
