@@ -1,5 +1,5 @@
 import { readFileSync, writeFileSync } from "fs";
-import { TypeScriptProject } from "projen";
+import { TypeScriptProject } from "projen/lib/typescript";
 import { TypescriptMorpher } from "./../src/index";
 
 test("create project", () => {
